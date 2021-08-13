@@ -16,6 +16,7 @@
     "url": ""
   },
   "dependencies": {
+    "com.alteracia.altmath":"0.0.0"
   },
   "type": "library"
 }
