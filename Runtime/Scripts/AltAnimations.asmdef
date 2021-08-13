@@ -1,0 +1,15 @@
+{
+    "name": "AltAnimations",
+    "references": [
+        "GUID:5cefcfee5b5d8f348b546fc7d1b860f5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
