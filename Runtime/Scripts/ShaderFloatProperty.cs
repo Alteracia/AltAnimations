@@ -26,11 +26,6 @@ namespace Alteracia.Animation
         
         private float _start;
 
-        public override void ChangeFinish(object finish)
-        {
-            this.finish = (float)finish;
-        }
-
         protected override bool PrepareTargets()
         {
             if (!TryGetSharedMaterials() 
@@ -50,7 +45,7 @@ namespace Alteracia.Animation
             
             foreach (var material in _sharedMaterials.Where(m => m))
             {
-                material.SetFloat(property, Mathf.Lerp(_start, finish, progress));
+                material.SetFloat(property, Mathf.Lerp(_start, finish, Progress));
             }
         }
 
@@ -79,14 +74,14 @@ namespace Alteracia.Animation
             // Do not update every run
             if (_sharedMaterials != null && _sharedMaterials.Length > 0) return true;
             // Invalid animation
-            if (components == null || components.Length == 0) return false;
+            if (Components == null || Components.Count == 0) return false; // TODO Check if necessary
             
             switch (mesh)
             {
                 case MeshType.Renderer:
                     List<Material> rendMaterials = new List<Material>();
                     
-                    foreach (var component in components)
+                    foreach (var component in Components)
                     {
                         Renderer rend = (Renderer) component;
                         rendMaterials.AddRange(rend.sharedMaterials);
@@ -98,7 +93,7 @@ namespace Alteracia.Animation
                 case MeshType.Graphic:
                     List<Material> graphMaterials = new List<Material>();
                     
-                    foreach (var component in components)
+                    foreach (var component in Components)
                     {
                         Graphic graph = (Graphic) component;
                         // Get material for Rendering in case masked UI TODO test can be material changed

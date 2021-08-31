@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Alteracia.Animation
@@ -7,43 +8,60 @@ namespace Alteracia.Animation
     [System.Serializable]
     public class Position : AltAnimation
     {
-        private Transform[] _transforms;
         [SerializeField] 
         private Vector3 start;
-        [FormerlySerializedAs("position")] [SerializeField] 
+        [SerializeField] 
         private Vector3 finish;
-        
+        [NonSerialized]
         private Vector3 _start;
+        [NonSerialized]
+        private Vector3 _finish;
 
         protected override bool PrepareTargets()
         {
-            if (_transforms == null || _transforms.Length == 0)
-                _transforms = System.Array.ConvertAll(components, item => (Transform)item);
-            if (_transforms == null || _transforms.Length == 0) return false;
+            if (!base.PrepareTargets()) return false;
             
-            _start = _transforms[0].position;
+            Transform any = Components[0] as Transform;
+            if (any == null) return false;
+            
+            _start = any.position;
           
-            return base.PrepareTargets();
+            return true;
         }
         
         protected override void UpdateCurrentProgressFromStart()
         {
-            progress = Vector3.Distance(start, _start) / Vector3.Distance(start, finish);
+            Progress = Vector3.Distance(start, _start) / Vector3.Distance(start, finish);
         }
 
         protected override void SetConstantStart()
         {
             _start = start;
         }
+        
+        protected override void OverwriteTarget()
+        {
+            _finish = finish;
+        }
+        
+        protected override void AddTarget()
+        {
+            Transform first = Components[0] as Transform;
+            _finish = first.position + finish;
+        }
+
+        protected override void MultiplyTarget()
+        {
+            Transform first = Components[0] as Transform;
+            _finish = Vector3.Cross(first.position, finish); // TODO Check
+        }
 
         protected override void Interpolate()
         {
-            base.Interpolate();
-            
-            if (_transforms == null || _transforms.Length == 0) return;
-            foreach (var trans in _transforms)
+            foreach (var comp in Components)
             {
-                trans.position = Vector3.Lerp(_start, finish, progress);
+                Transform trans = (Transform)comp;
+                trans.position = Vector3.Lerp(_start, _finish, Progress);
             }
         }
         

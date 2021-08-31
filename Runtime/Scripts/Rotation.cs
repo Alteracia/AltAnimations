@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Alteracia.Animation
 {
@@ -6,34 +7,37 @@ namespace Alteracia.Animation
     [System.Serializable]
     public class Rotation : AltAnimation
     {
-        private Transform[] _transforms;
+        /// <summary>
+        /// Rotation at start
+        /// </summary>
         [SerializeField]
         private Quaternion start;
-        [SerializeField] 
+        /// <summary>
+        /// Rotation for finish
+        /// </summary>
+        [SerializeField]
         private Quaternion finish;
         
+        [NonSerialized]
         private Quaternion _start;
+        [NonSerialized]
         private Quaternion _finish;
         
-        public override void ChangeFinish(object finish) // TODO Rid of
-        {
-            this.finish = (Quaternion)finish;
-        }
-
         protected override bool PrepareTargets()
         {
-            if (_transforms == null || _transforms.Length == 0)
-                _transforms = System.Array.ConvertAll(components, item => (Transform)item);
-            if (_transforms == null || _transforms.Length == 0) return false;
+            if (!base.PrepareTargets()) return false;
             
-            _start = _transforms[0].rotation;
+            Transform any = Components[0] as Transform;
+            if (any == null) return false;
+            
+            _start = any.rotation;
 
             return true;
         }
 
         protected override void UpdateCurrentProgressFromStart()
         {
-            progress = Quaternion.Angle(start, _start) / Quaternion.Angle(start, finish);
+            Progress = Quaternion.Angle(start, (Quaternion)_start) / Quaternion.Angle(start, finish);
         }
 
         protected override void SetConstantStart()
@@ -48,23 +52,23 @@ namespace Alteracia.Animation
 
         protected override void AddTarget()
         {
-            Vector3 euler = _transforms[0].rotation.eulerAngles + finish.eulerAngles;
+            Transform first = Components[0] as Transform;
+            Vector3 euler = first.rotation.eulerAngles + finish.eulerAngles;
             _finish = Quaternion.Euler(euler);
         }
 
         protected override void MultiplyTarget()
         {
-            _finish = _transforms[0].rotation * finish;
+            Transform first = Components[0] as Transform;
+            _finish = first.rotation * finish;
         }
 
         protected override void Interpolate()
         {
-            base.Interpolate();
-            
-            if (_transforms == null || _transforms.Length == 0) return;
-            foreach (var trans in _transforms)
+            foreach (var comp in Components)
             {
-                trans.rotation = Quaternion.Lerp(_start, _finish, progress);
+                Transform trans = (Transform)comp;
+                trans.rotation = Quaternion.Lerp(_start, _finish, Progress);
             }
         }
         

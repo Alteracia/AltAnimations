@@ -18,8 +18,7 @@ namespace Alteracia.Animation
 
         protected override bool PrepareTargets()
         {
-            if (_graphics == null || _graphics.Length == 0)
-                _graphics = System.Array.ConvertAll(components, item => (Graphic) item);
+            if (!base.PrepareTargets()) return false;
                 
             if (_graphics == null || _graphics.Length == 0) return false;
             
@@ -30,7 +29,7 @@ namespace Alteracia.Animation
         
         protected override void UpdateCurrentProgressFromStart()
         {
-            progress = Vector4.Distance(start, _start) / Vector4.Distance(start, finish);
+            Progress = Vector4.Distance(start, _start) / Vector4.Distance(start, finish);
         }
 
         protected override void Interpolate()
@@ -41,7 +40,7 @@ namespace Alteracia.Animation
             
             foreach (var graphic in _graphics)
             {
-                graphic.color = Color.Lerp(_start, finish, progress);
+                graphic.color = Color.Lerp(_start, finish, Progress);
             }
         }
 

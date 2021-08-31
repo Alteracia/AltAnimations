@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Alteracia.Animation
@@ -7,30 +8,30 @@ namespace Alteracia.Animation
     [System.Serializable]
     public class AnchoredPosition : AltAnimation
     {
-        private RectTransform[] _transforms;
-        
         [SerializeField]
         private Vector2 start;
-        [FormerlySerializedAs("position")] [SerializeField]
+        [SerializeField]
         private Vector2 finish;
         
+        [NonSerialized]
         private Vector2 _start;
+        [NonSerialized]
+        private Vector2 _finish;
 
         protected override bool PrepareTargets()
         {
-            if (_transforms == null || _transforms.Length == 0)
-                _transforms = System.Array.ConvertAll(components, item => (RectTransform)item);
+            if (!base.PrepareTargets()) return false;
             
-            if (_transforms == null || _transforms.Length == 0) return false;
-
-            _start = _transforms[0].anchoredPosition;
+            RectTransform any = Components[0] as RectTransform;
+            if (any == null) return false;
+            _start = any.anchoredPosition;
             
             return true;
         }
         
         protected override void UpdateCurrentProgressFromStart()
         {
-            progress = Vector2.Distance(start, _start) / Vector2.Distance(start, finish);
+            Progress = Vector2.Distance(start, _start) / Vector2.Distance(start, finish);
         }
 
         protected override void SetConstantStart()
@@ -40,12 +41,10 @@ namespace Alteracia.Animation
 
         protected override void Interpolate()
         {
-            base.Interpolate();
-            
-            if (_transforms == null || _transforms.Length == 0) return;
-            foreach (var trans in _transforms)
+            foreach (var comp in Components)
             {
-                trans.anchoredPosition = Vector2.Lerp(_start, finish, progress);
+                RectTransform trans = (RectTransform)comp;
+                trans.anchoredPosition = Vector2.Lerp(_start, finish, Progress);
             }
         }
         

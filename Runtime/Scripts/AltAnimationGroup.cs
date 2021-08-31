@@ -8,9 +8,9 @@ namespace Alteracia.Animation
     [CreateAssetMenu(fileName = "AnimationGroup", menuName = "AltAnimations/AnimationGroup", order = 1)]
     public class AltAnimationGroup : ScriptableObject, IAnimation
     {
-        [SerializeField] 
+        [SerializeField]
         private string id;
-        public int Id => UnityEngine.Animator.StringToHash(id);
+        public string Id => id;
 
         [SerializeField]
         private AltAnimation[] animations;
@@ -20,21 +20,13 @@ namespace Alteracia.Animation
             set => animations = value;
         }
 
+        [NonSerialized]
         private int _playingCount = -1;
         public bool Running => _playingCount > 0;
 
         private Action _finishCallback;
 
-        public void ChangeFinish(object finish)
-        {
-            foreach (var anim in animations)
-            {
-                if (anim)
-                    anim.ChangeFinish(finish);
-            }
-        }
-
-        public void Play(GameObject master, Action finishCallback = null)
+        public void Play(GameObject animator, Action finishCallback = null)
         {
             ChangeCallback(finishCallback);
             
@@ -46,7 +38,7 @@ namespace Alteracia.Animation
             foreach (var anim in animations)
             {
                 if (!anim) CountFinished();
-                else anim.Play(master, CountFinished);
+                else anim.Play(animator, CountFinished);
             }
         }
 

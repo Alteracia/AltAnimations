@@ -31,7 +31,7 @@ namespace Alteracia.Animation
             if (_methods == null || _methods.Length == 0)
             {
                 List<Action<float>> actions = new List<Action<float>>();
-                foreach (var component in components)
+                foreach (var component in Components)
                 {
                     if (component == null)
                     {
@@ -53,21 +53,21 @@ namespace Alteracia.Animation
                 _methods = actions.ToArray();
             }
             
-            var prop = components[0].GetType().GetProperty(property);
+            var prop = Components[0].GetType().GetProperty(property);
             if (prop == null)
             {
-                Debug.LogWarning("No \"" + property + "\" Property in component " + components[0]);
+                Debug.LogWarning("No \"" + property + "\" Property in component " + Components[0]);
                 return false;
             }
             
-            _start = (float)prop.GetValue(components[0]);
+            _start = (float)prop.GetValue(Components[0]);
             
             return true;
         }
         
         protected override void UpdateCurrentProgressFromStart()
         {
-            progress = (_start - start) / (alpha - start);
+            Progress = (_start - start) / (alpha - start);
         }
 
         protected override void SetConstantStart()
@@ -81,7 +81,7 @@ namespace Alteracia.Animation
 
             foreach (var action in _methods)
             {
-                action.Invoke(Mathf.Lerp(_start, alpha, progress));
+                action.Invoke(Mathf.Lerp(_start, alpha, Progress));
             }
         }
         

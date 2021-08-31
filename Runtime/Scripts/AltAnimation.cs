@@ -11,8 +11,7 @@ namespace Alteracia.Animation
     
     public interface IAnimation
     {
-        void ChangeFinish(System.Object finish);
-        void Play(GameObject master, Action finishCallback = null);
+        void Play(GameObject animator, Action finishCallback = null);
         bool Running { get; }
         void ChangeCallback(Action finishCallback = null);
         Task Wait(bool changeCallback = false, Action finishCallback = null);
@@ -23,40 +22,42 @@ namespace Alteracia.Animation
     public abstract class AltAnimation : ScriptableObject, IAnimation
     {
         /// <summary>
-        /// Do nothing or play animation again when Play is called while animation is running.
-        /// In both cases callback OnFinish will be overwritten.
+        /// Do nothing (false) or
+        /// play animation again (true) when Play is called while animation is running
         /// </summary>
         [Header("Behavior")]
-        [SerializeField]
+        [Tooltip("Do nothing (false) or play animation again (true) when Play is called while animation is running.")][SerializeField]
         private bool playOver = false;
-        
-        [SerializeField] 
+        /// <summary>
+        /// Play animation again after duration passed
+        /// </summary>
+        [Tooltip("Play animation again after duration passed")][SerializeField] 
         private bool loop = false;
-        
-        [SerializeField]
+        /// <summary>
+        /// Play animation backward after duration passed
+        /// </summary>
+        [Tooltip("Play animation backward after duration passed")][SerializeField]
         private bool swing = false;
         
         private enum AnimationProperty { Duration, Speed, Start }
         /// <summary>
         /// Duration - duration always the same. Start property has no affect on animation.
         /// Speed - new duration will calculate from current path. Start should be specified correctly.
-        /// Start - duration always the same. Animation always begin from start. Target will be teleport if it is away from start.
+        /// Start - duration always the same. Animation always begin from start. Target will be set to start without lerp.
         /// </summary>
         [Header("Time")]
-        [SerializeField] 
+        [Tooltip("The way animation starts and end")][SerializeField] 
         private AnimationProperty constant;
         /// <summary>
         /// Delay in seconds once after Play called.
         /// Use curves instead easings to set delay in other place of timeline.
         /// </summary>
-        [SerializeField]
-        [Range(0f, 5f)]
+        [Tooltip("Delay in seconds once after Play called")][SerializeField][Range(0f, 5f)]
         private float delay = 0f;
         /// <summary>
-        /// Duration in seconds.
+        /// Duration in seconds
         /// </summary>
-        [SerializeField]
-        [Range(0.0001f, 5f)]
+        [Tooltip("Duration in seconds")][SerializeField][Range(0.0001f, 5f)]
         private float duration = 1f;
         /// <summary>
         /// Duration combine with delay.
@@ -64,6 +65,7 @@ namespace Alteracia.Animation
         /// </summary>
         public float Duration => duration + delay;
 
+        [NonSerialized]
         private float _calculatedDuration = 0f;
         /// <summary>
         /// Duration which was calculate before animation was last Played
@@ -76,29 +78,25 @@ namespace Alteracia.Animation
         /// Curve - use AnimationCurve.
         /// </summary>
         [Header("Interpolation")]
-        [SerializeField]
+        [Tooltip("Type of easing")][SerializeField]
         private Alteracia.Logic.AltMath.EasingType easing = Alteracia.Logic.AltMath.EasingType.Linear;
-        
-        [SerializeField]
+        /// <summary>
+        /// Less efficient but more flexible way to set easings
+        /// </summary>
+        [Tooltip("Less efficient but more flexible way to set easings")][SerializeField]
         private AnimationCurve curve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
         /// <summary>
         /// If true: get all Components
         /// </summary>
         [Header("Target")]
-        [SerializeField]
+        [Tooltip("If true: get all Components")][SerializeField]
         private bool multiComponents = false;
-        
-        //public bool MultiComponents => multiComponents;
-        
         /// <summary>
         /// If true: exclude parent gameObject
         /// </summary>
-        [SerializeField]
+        [Tooltip("If true: exclude parent gameObject")][SerializeField]
         private bool excludeSelf = false;
-        
-        //public bool ExcludeSelf => excludeSelf;
-
         /// <summary>
         /// Name of object to get target Component from.
         /// If name is empty: first Component of animator or its child will be set to target.
@@ -106,22 +104,31 @@ namespace Alteracia.Animation
         /// </summary>
         [Tooltip("If empty: target will be the first Component, or all Components")][SerializeField]
         private string gameObjectName;
-        
-        //public string GameObjectName => gameObjectName;
-        [SerializeField]
+        /// <summary>
+        /// Math operation witch will be applied to set target start.
+        /// Overwrite, Add, Multiply
+        /// </summary>
+        [Tooltip("Math operation witch will be applied to set target start")][SerializeField]
         protected TargetOperation operation = TargetOperation.Overwrite;
 
-        protected Component[] components;
-
-        /// <summary>
-        /// Target Components 
-        /// </summary>
-        public Component[] Components // TODO Self init pass Transform
-        {
-            get => components;
-            set => components = value;
-        }
+        [NonSerialized]
+        protected List<Component> Components = new List<Component>();
+        [NonSerialized]
+        protected float Progress;
         
+        [NonSerialized] 
+        private List<int> _animatorsIds = new List<int>();
+        [NonSerialized]
+        private float _timer;
+        [NonSerialized]
+        private Task<bool> _animationRun = null;
+        public bool Running => _animationRun != null;
+        [NonSerialized]
+        private CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
+        
+        private delegate void Finished();
+        private event Finished OnFinished;
+
         public virtual Type GetComponentType()
         {
             return null;
@@ -141,74 +148,35 @@ namespace Alteracia.Animation
                    && self.gameObjectName == other.gameObjectName;
         }
 
-        private delegate void Finished();
-        private event Finished OnFinished;
-        
-        private CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
-        private Task<bool> _animationRun = null;
-        public bool Running => _animationRun != null;
-        
-        private bool _initialized = false;
-        private float _timer;
-        protected float progress;
-
-        public virtual void ChangeFinish(System.Object finish) { } // TODO Rid of
-
-        private void Init(GameObject gameObject)
+        private void Init(GameObject animator)
         {
             if (this.GetComponentType() == null)
             {
-                Debug.LogError("Can't get Component Type of animation \"" + this.name + "\"", gameObject);
+                Debug.LogError("Can't get Component Type of animation \"" + this.name + "\"", animator);
                 return;
             }
 
-            if (string.IsNullOrEmpty(this.gameObjectName))
-            {
-                if (this.multiComponents)
-                {
-                    if (this.excludeSelf)
-                        this.Components = gameObject.GetComponentsInChildren(this.GetComponentType())
-                            .Where(a => a.gameObject != gameObject).ToArray();
-                    else
-                        this.Components = gameObject.GetComponentsInChildren(this.GetComponentType());
-                }
-                else
-                {
-                    Component only = gameObject.GetComponentInChildren(this.GetComponentType());
-                    if (!only || (only.gameObject == gameObject && this.excludeSelf))
-                        return;
-                    this.Components = new List<Component> {only}.ToArray();
-                }
-
-                _initialized = true;
-                return;
-            }
-
-            if (this.multiComponents) // Get All with the same name
-                this.Components = gameObject.GetComponentsInChildren(this.GetComponentType()).Where(c =>
-                        c.gameObject.name == this.gameObjectName && (!this.excludeSelf || c.gameObject != gameObject))
-                    .ToArray();
-            else
-            {
-                Component[] components = gameObject.GetComponentsInChildren(this.GetComponentType());
-                if (components == null || components.Length == 0 || !components.Any(c =>
-                    c.gameObject.name == this.gameObjectName && (!this.excludeSelf || c.gameObject != gameObject)))
-                    return;
-                Component first = components.First(c =>
-                    c.gameObject.name == this.gameObjectName && (!this.excludeSelf || c.gameObject != gameObject));
-                var list = new List<Component> {first};
-                this.Components = list.ToArray();
-            }
+            Component[] components = animator.GetComponentsInChildren(this.GetComponentType());
+            if (this.excludeSelf) 
+                components = components.Where(c => c.gameObject != animator).ToArray();
+            if (!string.IsNullOrEmpty(this.gameObjectName))
+                components = components.Where(c =>
+                    c.gameObject.name == this.gameObjectName).ToArray();
             
-            _initialized = true;
+            if (components.Length == 0) return;
+            
+            if (multiComponents) Components.AddRange(components);
+            else Components.Add(components[0]);
+            
+            _animatorsIds.Add(animator.GetInstanceID());
         }
 
-        public async void Play(GameObject master, Action finishCallback = null)
+        public async void Play(GameObject animator = null, Action finishCallback = null)
         {
-            if (!_initialized)
+            if (animator && !_animatorsIds.Contains(animator.GetInstanceID()))
             {
                 await Task.Yield(); // be sure that gameObject started
-                Init(master);
+                Init(animator);
             }
             
             // Always change callback
@@ -223,7 +191,7 @@ namespace Alteracia.Animation
                 this.Stop(false);
             }
             
-            if (components == null || components.Length == 0 || !this.PrepareTargets())
+            if (!this.PrepareTargets())
             {
                 InvokeFinishCallback();
                 return;
@@ -254,7 +222,7 @@ namespace Alteracia.Animation
                     break;
                 case AnimationProperty.Speed:
                     UpdateCurrentProgressFromStart();
-                    _calculatedDuration = duration * Alteracia.Logic.AltMath.Ease(this.easing, 1 - progress, curve);
+                    _calculatedDuration = duration * Alteracia.Logic.AltMath.Ease(this.easing, 1 - Progress, curve);
                     break;
                 case AnimationProperty.Start:
                     _calculatedDuration = duration;
@@ -281,7 +249,10 @@ namespace Alteracia.Animation
             _cancelTokenSource = new CancellationTokenSource();
         }
 
-        protected virtual bool PrepareTargets() { return false; }
+        protected virtual bool PrepareTargets()
+        {
+            return Components != null && Components.Count > 0;
+        }
 
         protected virtual void UpdateCurrentProgressFromStart() { }
         protected virtual void SetConstantStart() {}
@@ -298,7 +269,7 @@ namespace Alteracia.Animation
                 if (_cancelTokenSource.Token.IsCancellationRequested)
                     return true;
                
-                _timer += Time.deltaTime;  // overflow ?
+                _timer += Time.deltaTime;
 
                 float alpha = _timer / _calculatedDuration;
                 if (loop || swing)
@@ -306,7 +277,7 @@ namespace Alteracia.Animation
                 else
                     alpha = Mathf.Clamp01(alpha);
                 
-                this.progress = Alteracia.Logic.AltMath.Ease(easing, alpha);
+                this.Progress = Alteracia.Logic.AltMath.Ease(easing, alpha);
                                 
                 this.Interpolate();
                 

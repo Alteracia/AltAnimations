@@ -11,15 +11,15 @@ namespace Alteracia.Animation
         private CanvasGroup[] _canvasGroups;
         [SerializeField]
         private float start;
-        [FormerlySerializedAs("alpha")] [SerializeField] 
+        [SerializeField] 
         private float finish;
         
         private float _start;
 
         protected override bool PrepareTargets()
         {
-            if (_canvasGroups == null || _canvasGroups.Length == 0)
-                _canvasGroups = System.Array.ConvertAll(components, item => (CanvasGroup)item);
+            base.PrepareTargets();
+            
             if (_canvasGroups == null || _canvasGroups.Length == 0) 
                 return false;
             
@@ -30,7 +30,7 @@ namespace Alteracia.Animation
 
         protected override void UpdateCurrentProgressFromStart()
         {
-            progress = (_start - start) / (finish - start);
+            Progress = (_start - start) / (finish - start);
         }
 
         protected override void SetConstantStart()
@@ -45,7 +45,7 @@ namespace Alteracia.Animation
             if (_canvasGroups == null || _canvasGroups.Length == 0) return;
             foreach (var canvasGroup in _canvasGroups)
             {
-                canvasGroup.alpha = Mathf.Lerp(_start, finish, progress);
+                canvasGroup.alpha = Mathf.Lerp(_start, finish, Progress);
             }
         }
         
