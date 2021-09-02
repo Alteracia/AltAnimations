@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace Alteracia.Animation
 {
-    [CreateAssetMenu(fileName = "AnchoredPositionAnimation", menuName = "AltAnimations/AnchoredPosition", order = 3)]
+    [CreateAssetMenu(fileName = "RectScaleAnimation", menuName = "AltAnimations/RectScale", order = 3)]
     [System.Serializable]
-    public class AnchoredPosition : AltAnimation
+    public class RectScale : AltAnimation
     {
         [SerializeField]
         private Vector2 start;
@@ -23,7 +23,7 @@ namespace Alteracia.Animation
             
             RectTransform any = Components[0] as RectTransform;
             if (any == null) return false;
-            _start = any.anchoredPosition;
+            _start = any.sizeDelta;
             
             return true;
         }
@@ -43,7 +43,7 @@ namespace Alteracia.Animation
             foreach (var comp in Components)
             {
                 RectTransform trans = (RectTransform)comp;
-                trans.anchoredPosition = Vector2.Lerp(_start, finish, Progress);
+                trans.sizeDelta = Vector2.Lerp(_start, finish, Progress);
             }
         }
         
@@ -57,5 +57,5 @@ namespace Alteracia.Animation
             return base.Equals(this, other);
         }
     }
-
+    
 }
