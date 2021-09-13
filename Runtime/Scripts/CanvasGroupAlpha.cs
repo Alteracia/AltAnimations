@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Alteracia.Animation
@@ -7,23 +9,26 @@ namespace Alteracia.Animation
     [System.Serializable]
     public class CanvasGroupAlpha : AltAnimation
     {
-        [Header("Target")]
-        private CanvasGroup[] _canvasGroups;
+       // [Header("Target")]
+       // private CanvasGroup[] _canvasGroups;
         [SerializeField]
         private float start;
         [SerializeField] 
         private float finish;
         
+        [NonSerialized]
         private float _start;
+        [NonSerialized]
+        private float _finish;
 
         protected override bool PrepareTargets()
         {
-            base.PrepareTargets();
+            if (!base.PrepareTargets()) return false;
+
+            CanvasGroup any = Components[0] as CanvasGroup;
             
-            if (_canvasGroups == null || _canvasGroups.Length == 0) 
-                return false;
-            
-            _start = _canvasGroups[0].alpha;
+            if (any == null) return false;
+            _start = any.alpha;
             
             return true;
         }
@@ -40,10 +45,7 @@ namespace Alteracia.Animation
         
         protected override void Interpolate()
         {
-            base.Interpolate();
-            
-            if (_canvasGroups == null || _canvasGroups.Length == 0) return;
-            foreach (var canvasGroup in _canvasGroups)
+            foreach (var canvasGroup in Components.Cast<CanvasGroup>())
             {
                 canvasGroup.alpha = Mathf.Lerp(_start, finish, Progress);
             }

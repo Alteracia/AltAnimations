@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Alteracia.Animation
@@ -40,9 +41,8 @@ namespace Alteracia.Animation
 
         protected override void Interpolate()
         {
-            foreach (var comp in Components)
+            foreach (var trans in Components.Cast<RectTransform>())
             {
-                RectTransform trans = (RectTransform)comp;
                 trans.anchoredPosition = Vector2.Lerp(_start, finish, Progress);
             }
         }
