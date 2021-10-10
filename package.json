@@ -1,9 +1,9 @@
 {
   "name": "com.alteracia.altanimations",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "displayName": "altAnimations",
   "description": "Altrernative Animations for Unity. Based on ScriptableObjects and Async/await.",
-  "unity": "2019.4",
+  "unity": "2017.1",
   "keywords": [
     "animation",
     "scriptableObject",
@@ -15,8 +15,15 @@
     "email": "kazantsev@alteracia.ru",
     "url": ""
   },
+  "type": "tool",
   "dependencies": {
-    "com.alteracia.altmath":"0.0.0"
+    "com.alteracia.altmath": "0.0.0"
   },
-  "type": "library"
+  "samples": [
+    {
+      "displayName": "Common Samples",
+      "description": "Contains sample animations and scenes",
+      "path": "Samples~"
+    }
+  ]
 }

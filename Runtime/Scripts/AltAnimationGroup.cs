@@ -30,7 +30,7 @@ namespace Alteracia.Animation
         {
             ChangeCallback(finishCallback);
             
-            if (animations.Length == 0 || this.Running) return;
+            if (animations.Length == 0) return;// || this.Running) return;
             
             _playingCount = animations.Length;
             

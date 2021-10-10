@@ -110,7 +110,7 @@ namespace Alteracia.Animation
             animationGroups = list.ToArray();
         }
         /// <summary>
-        /// Awaitable task
+        /// Wait for end of all playing animations
         /// <example>
         /// animator.Play(run);
         /// await animator.Wait();

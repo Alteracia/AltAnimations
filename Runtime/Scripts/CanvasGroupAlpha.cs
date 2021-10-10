@@ -9,8 +9,6 @@ namespace Alteracia.Animation
     [System.Serializable]
     public class CanvasGroupAlpha : AltAnimation
     {
-       // [Header("Target")]
-       // private CanvasGroup[] _canvasGroups;
         [SerializeField]
         private float start;
         [SerializeField] 

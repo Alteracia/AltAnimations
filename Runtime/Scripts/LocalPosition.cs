@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Alteracia.Animation
 {
-    [CreateAssetMenu(fileName = "PositionAnimation", menuName = "AltAnimations/Position", order = 2)]
+    [CreateAssetMenu(fileName = "LocalPositionAnimation", menuName = "AltAnimations/LocalPosition", order = 2)]
     [System.Serializable]
-    public class Position : AltAnimation
+    public class LocalPosition : AltAnimation
     {
         [SerializeField] 
         private Vector3 start;
@@ -23,7 +23,7 @@ namespace Alteracia.Animation
             Transform any = Components[0] as Transform;
             if (any == null) return false;
             
-            _start = any.position;
+            _start = any.localPosition;
           
             return true;
         }
@@ -46,13 +46,13 @@ namespace Alteracia.Animation
         protected override void AddTarget()
         {
             Transform first = Components[0] as Transform;
-            _finish = first.position + finish;
+            _finish = first.localPosition + finish;
         }
 
         protected override void MultiplyTarget()
         {
             Transform first = Components[0] as Transform;
-            _finish = Vector3.Cross(first.position, finish); // TODO Check
+            _finish = Vector3.Cross(first.localPosition, finish); // TODO Check
         }
 
         protected override void Interpolate()
@@ -60,7 +60,7 @@ namespace Alteracia.Animation
             foreach (var comp in Components)
             {
                 Transform trans = (Transform)comp;
-                trans.position = Vector3.Lerp(_start, _finish, Progress);
+                trans.localPosition = Vector3.Lerp(_start, _finish, Progress);
             }
         }
         

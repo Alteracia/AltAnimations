@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e09c88c4f0ab6496ebf9b439b92b4850, type: 3}
+  m_Name: LocalJump
+  m_EditorClassIdentifier: 
+  id: jump_l
+  animations:
+  - {fileID: 11400000, guid: 0f061ab88843e48d288c06570560f9db, type: 2}
