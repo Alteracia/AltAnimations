@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: jump_l
   animations:
-  - {fileID: 11400000, guid: 0f061ab88843e48d288c06570560f9db, type: 2}
+  - {fileID: 11400000, guid: e3e6755894841420298d1d2ea0abe6fb, type: 2}
+  - {fileID: 11400000, guid: 6f5c0121e39a94a0f874e64e0a7a932e, type: 2}

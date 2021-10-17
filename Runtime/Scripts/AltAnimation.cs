@@ -79,7 +79,7 @@ namespace Alteracia.Animation
         /// </summary>
         [Header("Interpolation")]
         [Tooltip("Type of easing")][SerializeField]
-        private Alteracia.Logic.AltMath.EasingType easing = Alteracia.Logic.AltMath.EasingType.Linear;
+        private Logic.AltMath.EasingType easing = Logic.AltMath.EasingType.Linear;
         /// <summary>
         /// Less efficient but more flexible way to set easings
         /// </summary>
@@ -129,17 +129,14 @@ namespace Alteracia.Animation
         private delegate void Finished();
         private event Finished OnFinished;
 
-        public virtual Type GetComponentType()
-        {
-            return null;
-        }
+        public abstract Type GetComponentType();
         
         public virtual bool Equals(AltAnimation other)
         {
             return Equals(this, other);
         }
 
-        public virtual bool Equals(AltAnimation self, AltAnimation other)
+        protected virtual bool Equals(AltAnimation self, AltAnimation other)
         {
             // compare components
             return self.GetType() == other.GetType()
@@ -157,6 +154,7 @@ namespace Alteracia.Animation
             }
 
             Component[] components = animator.GetComponentsInChildren(this.GetComponentType());
+            
             if (this.excludeSelf) 
                 components = components.Where(c => c.gameObject != animator).ToArray();
             if (!string.IsNullOrEmpty(this.gameObjectName))
@@ -222,7 +220,7 @@ namespace Alteracia.Animation
                     break;
                 case AnimationProperty.Speed:
                     UpdateCurrentProgressFromStart();
-                    _calculatedDuration = duration * Alteracia.Logic.AltMath.Ease(this.easing, 1 - Progress, curve);
+                    _calculatedDuration = duration * Logic.AltMath.Ease(this.easing, 1 - Progress, curve);
                     break;
                 case AnimationProperty.Start:
                     _calculatedDuration = duration;
@@ -254,12 +252,12 @@ namespace Alteracia.Animation
             return Components != null && Components.Count > 0;
         }
 
-        protected virtual void UpdateCurrentProgressFromStart() { }
-        protected virtual void SetConstantStart() {}
-        
-        protected virtual void OverwriteTarget() {}
-        protected virtual void AddTarget() {}
-        protected virtual void MultiplyTarget() {}
+        protected abstract void UpdateCurrentProgressFromStart();
+        protected abstract void SetConstantStart();
+
+        protected abstract void OverwriteTarget();
+        protected abstract void AddTarget();
+        protected abstract void MultiplyTarget();
         
 
         private async Task<bool> RunAnimation()
@@ -277,7 +275,7 @@ namespace Alteracia.Animation
                 else
                     alpha = Mathf.Clamp01(alpha);
                 
-                this.Progress = Alteracia.Logic.AltMath.Ease(easing, alpha);
+                this.Progress = Logic.AltMath.Ease(easing, alpha);
                                 
                 this.Interpolate();
                 
@@ -286,8 +284,8 @@ namespace Alteracia.Animation
             
             return false;
         }
-        
-        protected virtual void Interpolate() { }
+
+        protected abstract void Interpolate();
 
         public void Stop(bool invokeFinishCallback)
         {
@@ -306,7 +304,7 @@ namespace Alteracia.Animation
                 await _animationRun;
         }
 
-        public void InvokeFinishCallback()
+        public void InvokeFinishCallback() // TODO Private
         {
             this.OnFinished?.Invoke();
             this.OnFinished = null;

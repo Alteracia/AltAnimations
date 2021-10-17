@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Alteracia.Animation
@@ -16,14 +17,15 @@ namespace Alteracia.Animation
         [NonSerialized]
         private Vector3 _finish;
 
+        private Transform First => Components[0] as Transform;
+        
         protected override bool PrepareTargets()
         {
             if (!base.PrepareTargets()) return false;
             
-            Transform any = Components[0] as Transform;
-            if (any == null) return false;
+            if (First == null) return false;
             
-            _start = any.position;
+            _start = First.position;
           
             return true;
         }
@@ -45,21 +47,18 @@ namespace Alteracia.Animation
         
         protected override void AddTarget()
         {
-            Transform first = Components[0] as Transform;
-            _finish = first.position + finish;
+            _finish = First.position + finish;
         }
 
         protected override void MultiplyTarget()
         {
-            Transform first = Components[0] as Transform;
-            _finish = Vector3.Cross(first.position, finish); // TODO Check
+            _finish = Vector3.Cross(First.position, finish);
         }
 
         protected override void Interpolate()
         {
-            foreach (var comp in Components)
+            foreach (var trans in Components.Cast<Transform>())
             {
-                Transform trans = (Transform)comp;
                 trans.position = Vector3.Lerp(_start, _finish, Progress);
             }
         }

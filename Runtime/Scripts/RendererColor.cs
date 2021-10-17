@@ -1,38 +1,38 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Alteracia.Animation
 {
-    [CreateAssetMenu(fileName = "CgAlphaAnimation", menuName = "AltAnimations/CanvasGroupAlpha", order = 4)]
+    [CreateAssetMenu(fileName = "RendererColorAnimation", menuName = "AltAnimations/RendererColor", order = 5)]
     [System.Serializable]
-    public class CanvasGroupAlpha : AltAnimation
+    public class RendererColor : AltAnimation
     {
         [SerializeField]
-        private float start;
+        private Color start;
         [SerializeField] 
-        private float finish;
-        
-        [System.NonSerialized]
-        private float _start;
-        [System.NonSerialized]
-        private float _finish;
-        
-        private CanvasGroup First => Components[0] as CanvasGroup;
+        private Color finish;
+        [NonSerialized]
+        private Color _start;
+        [NonSerialized]
+        private Color _finish;
+        private Renderer First => Components[0] as Renderer;
 
         protected override bool PrepareTargets()
         {
             if (!base.PrepareTargets()) return false;
-
+                
             if (First == null) return false;
             
-            _start = First.alpha;
+            _start = First.material.color;
             
             return true;
         }
-
+        
         protected override void UpdateCurrentProgressFromStart()
         {
-            Progress = (_start - start) / (finish - start);
+            Progress = Vector4.Distance(start, _start) / Vector4.Distance(start, finish);
         }
 
         protected override void SetConstantStart()
@@ -47,25 +47,25 @@ namespace Alteracia.Animation
 
         protected override void AddTarget()
         {
-            _finish = First.alpha + finish;
+            _finish = First.material.color + finish;
         }
 
         protected override void MultiplyTarget()
         {
-            _finish = First.alpha * finish;
+            _finish = First.material.color * finish; // TODO TEST
         }
 
         protected override void Interpolate()
         {
-            foreach (var canvasGroup in Components.Cast<CanvasGroup>())
+            foreach (var renderer in Components.Cast<Renderer>())
             {
-                canvasGroup.alpha = Mathf.Lerp(_start, _finish, Progress);
+                renderer.material.color = Color.Lerp(_start, _finish, Progress);
             }
         }
-        
+
         public override System.Type GetComponentType()
         {
-            return typeof(CanvasGroup);
+            return typeof(Renderer);
         }
         
         public override bool Equals(AltAnimation other)

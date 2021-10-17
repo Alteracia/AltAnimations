@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Alteracia.Animation
@@ -17,13 +18,15 @@ namespace Alteracia.Animation
         [NonSerialized]
         private Vector2 _finish;
 
+        private RectTransform First => Components[0] as RectTransform;
+        
         protected override bool PrepareTargets()
         {
             if (!base.PrepareTargets()) return false;
             
-            RectTransform any = Components[0] as RectTransform;
-            if (any == null) return false;
-            _start = any.sizeDelta;
+            if (First == null) return false;
+            
+            _start = First.sizeDelta;
             
             return true;
         }
@@ -38,12 +41,26 @@ namespace Alteracia.Animation
             _start = start;
         }
 
+        protected override void OverwriteTarget()
+        {
+            _finish = finish;
+        }
+
+        protected override void AddTarget()
+        {
+            _finish = First.sizeDelta + finish;
+        }
+
+        protected override void MultiplyTarget()
+        {
+            _finish = First.sizeDelta * finish; // TODO TEST
+        }
+
         protected override void Interpolate()
         {
-            foreach (var comp in Components)
+            foreach (var trans in Components.Cast<RectTransform>())
             {
-                RectTransform trans = (RectTransform)comp;
-                trans.sizeDelta = Vector2.Lerp(_start, finish, Progress);
+                trans.sizeDelta = Vector2.Lerp(_start, _finish, Progress);
             }
         }
         

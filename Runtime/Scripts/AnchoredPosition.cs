@@ -12,19 +12,20 @@ namespace Alteracia.Animation
         private Vector2 start;
         [SerializeField]
         private Vector2 finish;
-        
         [NonSerialized]
         private Vector2 _start;
         [NonSerialized]
         private Vector2 _finish;
 
+        private RectTransform First => Components[0] as RectTransform;
+        
         protected override bool PrepareTargets()
         {
             if (!base.PrepareTargets()) return false;
             
-            RectTransform any = Components[0] as RectTransform;
-            if (any == null) return false;
-            _start = any.anchoredPosition;
+            if (First == null) return false;
+            
+            _start = First.anchoredPosition;
             
             return true;
         }
@@ -39,11 +40,26 @@ namespace Alteracia.Animation
             _start = start;
         }
 
+        protected override void OverwriteTarget()
+        {
+            _finish = finish;
+        }
+
+        protected override void AddTarget()
+        {
+            _finish = First.anchoredPosition + finish;
+        }
+
+        protected override void MultiplyTarget()
+        {
+            _finish = First.anchoredPosition * finish; // TODO TEST
+        }
+
         protected override void Interpolate()
         {
             foreach (var trans in Components.Cast<RectTransform>())
             {
-                trans.anchoredPosition = Vector2.Lerp(_start, finish, Progress);
+                trans.anchoredPosition = Vector2.Lerp(_start, _finish, Progress);
             }
         }
         

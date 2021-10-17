@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Alteracia.Animation
@@ -7,22 +9,23 @@ namespace Alteracia.Animation
     [System.Serializable]
     public class GraphicColor : AltAnimation
     {
-        private Graphic[] _graphics;
-       
         [SerializeField]
         private Color start;
         [SerializeField] 
         private Color finish;
-        
+        [NonSerialized]
         private Color _start;
+        [NonSerialized]
+        private Color _finish;
+        private Graphic First => Components[0] as Graphic;
 
         protected override bool PrepareTargets()
         {
             if (!base.PrepareTargets()) return false;
                 
-            if (_graphics == null || _graphics.Length == 0) return false;
+            if (First == null) return false;
             
-            _start = _graphics[0].color;
+            _start = First.color;
             
             return true;
         }
@@ -32,21 +35,42 @@ namespace Alteracia.Animation
             Progress = Vector4.Distance(start, _start) / Vector4.Distance(start, finish);
         }
 
+        protected override void SetConstantStart()
+        {
+            _start = start;
+        }
+
+        protected override void OverwriteTarget()
+        {
+            _finish = finish;
+        }
+
+        protected override void AddTarget()
+        {
+            _finish = First.color + finish;
+        }
+
+        protected override void MultiplyTarget()
+        {
+            _finish = First.color * finish; // TODO TEST
+        }
+
         protected override void Interpolate()
         {
-            base.Interpolate();
-            
-            if (_graphics == null || _graphics.Length == 0) return;
-            
-            foreach (var graphic in _graphics)
+            foreach (var graphic in Components.Cast<Graphic>())
             {
-                graphic.color = Color.Lerp(_start, finish, Progress);
+                graphic.color = Color.Lerp(_start, _finish, Progress);
             }
         }
 
         public override System.Type GetComponentType()
         {
             return typeof(Graphic);
+        }
+        
+        public override bool Equals(AltAnimation other)
+        {
+            return base.Equals(this, other);
         }
     }
 }
