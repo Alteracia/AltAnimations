@@ -6,19 +6,11 @@ using UnityEngine;
 namespace Alteracia.Animation
 {
     [CreateAssetMenu(fileName = "AnimationGroup", menuName = "AltAnimations/AnimationGroup", order = 1)]
-    public class AltAnimationGroup : ScriptableObject, IAnimation
+    public class AltAnimationGroup : Alteracia.Patterns.RootScriptableObject, IAnimation
     {
         [SerializeField]
         private string id;
         public string Id => id;
-
-        [SerializeField]
-        private AltAnimation[] animations;
-        public AltAnimation[] Animations
-        {
-            get => animations;
-            set => animations = value;
-        }
 
         [NonSerialized]
         private int _playingCount = -1;
@@ -30,12 +22,12 @@ namespace Alteracia.Animation
         {
             ChangeCallback(finishCallback);
             
-            if (animations.Length == 0) return;// || this.Running) return;
+            if (Nested.Count == 0) return;// || this.Running) return;
             
-            _playingCount = animations.Length;
+            _playingCount = Nested.Count;
             
             // Play all without callback
-            foreach (var anim in animations)
+            foreach (var anim in Nested.Cast<AltAnimation>())
             {
                 if (!anim) CountFinished();
                 else anim.Play(animator, CountFinished);
@@ -55,7 +47,7 @@ namespace Alteracia.Animation
             ChangeCallback();
             
             // Stop all
-            foreach (var anim in animations)
+            foreach (var anim in Nested.Cast<AltAnimation>())
             {
                 // Stop with invoke for right count
                 anim.Stop(true);
@@ -74,7 +66,7 @@ namespace Alteracia.Animation
                 ChangeCallback(finishCallback);
             
             // Wait all animations
-            foreach (var animation in animations.Where(a => a.Running))
+            foreach (var animation in Nested.Cast<AltAnimation>().Where(a => a.Running))
                 await animation.Wait(); // TODO CHeck
         }
 
@@ -97,9 +89,60 @@ namespace Alteracia.Animation
         public bool HaveEqualAnimationWith(AltAnimationGroup other)
         {
             // find one equals animation pair
-            return (from anim in animations
-                from otherAnim in other.animations where anim.Equals(otherAnim)
+            return (from anim in Nested.Cast<AltAnimation>()
+                from otherAnim in other.Nested.Cast<AltAnimation>() where anim.Equals(otherAnim)
                 select anim).Any();
         }
+
+#if UNITY_EDITOR
+        
+        [ContextMenu("Add position animation")]
+        private void AddPositionAnim() => AddNested<Position>();
+
+        [ContextMenu("Add local position animation")]
+        private void AddLocalPositionAnim() => AddNested<LocalPosition>();
+        
+        [ContextMenu("Add anchored position animation")]
+        private void AddAnchoredPositionAnim() => AddNested<AnchoredPosition>();
+        
+        [ContextMenu("Add rotation animation")]
+        private void AddRotationAnim() => AddNested<Rotation>();
+        
+       // [ContextMenu("Add local rotation animation")]
+       // private void AddLocalRotationAnim() => AddNested<LocalRotation>();
+       
+       // [ContextMenu("Add rect rotation animation")]
+       // private void AddRectRotationAnim() => AddNested<RectRotation>();
+        
+       // [ContextMenu("Add scale animation")]
+       // private void AddScaleAnim() => AddNested<Scale>();
+       
+       // [ContextMenu("Add local scale animation")]
+       // private void AddLocalScaleAnim() => AddNested<LocalScale>();
+       
+        [ContextMenu("Add rect scale animation")]
+        private void AddRectScaleAnim() => AddNested<RectScale>();
+        
+        [ContextMenu("Add method float animation")]
+        private void AddMethodFloatAnim() => AddNested<FloatMethod>();
+
+        [ContextMenu("Add renderer shader float animation")]
+        private void AddRendererShaderFloatAnim() => AddNested<RendererShaderFloatProperty>();
+        
+        [ContextMenu("Add graphic shader float animation")]
+        private void AddGraphicShaderFloatAnim() => AddNested<GraphicShaderFloatProperty>();
+        
+        [ContextMenu("Add renderer color animation")]
+        private void AddRendererColorAnim() => AddNested<RendererColor>();
+        
+        [ContextMenu("Add graphic color animation")]
+        private void AddGraphicColorAnim() => AddNested<GraphicColor>();
+        
+        [ContextMenu("Add canvas alpha animation")]
+        private void AddCanvasAlphaAnim() => AddNested<CanvasGroupAlpha>();
+
+        
+#endif
+       
     }
 }

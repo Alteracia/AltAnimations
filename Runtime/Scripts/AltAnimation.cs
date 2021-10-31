@@ -19,7 +19,7 @@ namespace Alteracia.Animation
     }
     
     [Serializable]
-    public abstract class AltAnimation : ScriptableObject, IAnimation
+    public abstract class AltAnimation : Alteracia.Patterns.NestedScriptableObject, IAnimation
     {
         /// <summary>
         /// Do nothing (false) or

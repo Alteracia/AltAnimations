@@ -1,7 +1,8 @@
 {
     "name": "AltAnimations",
     "references": [
-        "GUID:8f296e6086f0b449e9978a1d86c01177"
+        "GUID:8f296e6086f0b449e9978a1d86c01177",
+        "GUID:842a5b24999094edf8cc355439c5e405"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

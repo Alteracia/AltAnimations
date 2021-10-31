@@ -76,15 +76,12 @@ namespace Alteracia.Animation
         {
             AltAnimationGroup newGroup = ScriptableObject.Instantiate(group);
             
-            List<AltAnimation> newAnimations = new List<AltAnimation>();
-            foreach (var anim in group.Animations)
+            foreach (var newAnim in from anim in @group.Nested 
+                where anim != null select ScriptableObject.Instantiate(anim))
             {
-                if (anim == null) continue;
-                AltAnimation newAnim = ScriptableObject.Instantiate(anim);
-                newAnimations.Add(newAnim);
+                newGroup.Nested.Add(newAnim);
             }
 
-            newGroup.Animations = newAnimations.ToArray();
             return newGroup;
         }
         
