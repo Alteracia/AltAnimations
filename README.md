@@ -5,4 +5,5 @@ Altrernative Animations for Unity. Based on ScriptableObjects and Async/await.
 # Installing
 Download and open the [Install Packege](https://package-installer.glitch.me/v1/installer/OpenUPM/com.alteracia.altanimations?registry=https%3A%2F%2Fpackage.openupm.com). Reopen Unity after installation.
 # Dependencies
-[AltMath](https://github.com/Alteracia/AltMath) some simple math and logic functions and extensions
+[AltMath](https://github.com/Alteracia/AltMath) some simple math and logic functions and extensions. 
+[AltPatterns](https://github.com/Alteracia/AltPatterns) some Patterns for Unity.
