@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Alteracia.Animation
+namespace Alteracia.Animations
 {
     public class AltAnimator : MonoBehaviour
     {

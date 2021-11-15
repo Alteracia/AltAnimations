@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Alteracia.Animation
+namespace Alteracia.Animations
 {
     public enum TargetOperation { Overwrite, Add, Multiply }
     
@@ -19,7 +19,7 @@ namespace Alteracia.Animation
     }
     
     [Serializable]
-    public abstract class AltAnimation : Alteracia.Patterns.NestedScriptableObject, IAnimation
+    public abstract class AltAnimation : Patterns.ScriptableObjects.NestedScriptableObject, IAnimation
     {
         /// <summary>
         /// Do nothing (false) or

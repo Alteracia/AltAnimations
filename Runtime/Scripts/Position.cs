@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Alteracia.Animation
+namespace Alteracia.Animations
 {
     [CreateAssetMenu(fileName = "PositionAnimation", menuName = "AltAnimations/Position", order = 2)]
     [System.Serializable]

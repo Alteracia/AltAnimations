@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Alteracia.Animation
+namespace Alteracia.Animations
 {
     [CreateAssetMenu(fileName = "AnimationGroup", menuName = "AltAnimations/AnimationGroup", order = 1)]
-    public class AltAnimationGroup : Alteracia.Patterns.RootScriptableObject, IAnimation
+    public class AltAnimationGroup : Patterns.ScriptableObjects.RootScriptableObject, IAnimation
     {
         [SerializeField]
         private string id;

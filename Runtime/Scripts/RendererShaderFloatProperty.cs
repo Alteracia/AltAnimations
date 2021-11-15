@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Alteracia.Animation
+namespace Alteracia.Animations
 {
     [CreateAssetMenu(fileName = "RendererShaderFloatPropertyAnimation", menuName = "AltAnimations/RendererShaderFloatProperty", order = 5)]
     [System.Serializable]

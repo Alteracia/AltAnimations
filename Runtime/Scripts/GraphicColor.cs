@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Alteracia.Animation
+namespace Alteracia.Animations
 {
     [CreateAssetMenu(fileName = "ColorAnimation", menuName = "AltAnimations/GraphicColor", order = 5)]
     [System.Serializable]

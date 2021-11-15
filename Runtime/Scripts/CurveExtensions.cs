@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Alteracia.Logic.Animation
+namespace Alteracia.Animations
 {
 	public static class CurveExtensions
 	{

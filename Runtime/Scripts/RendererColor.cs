@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Alteracia.Animation
+namespace Alteracia.Animations
 {
     [CreateAssetMenu(fileName = "RendererColorAnimation", menuName = "AltAnimations/RendererColor", order = 5)]
     [System.Serializable]

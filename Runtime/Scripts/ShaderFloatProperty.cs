@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Alteracia.Animation
+namespace Alteracia.Animations
 {
     public abstract class ShaderFloatProperty : AltAnimation
     {

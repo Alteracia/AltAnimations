@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace Alteracia.Animation
+namespace Alteracia.Animations
 {
     [CreateAssetMenu(fileName = "RectScaleAnimation", menuName = "AltAnimations/RectScale", order = 3)]
     [System.Serializable]

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace Alteracia.Animation
+namespace Alteracia.Animations
 {
     [CreateAssetMenu(fileName = "FloatMethodAnimation", menuName = "AltAnimations/FloatMethodAnimation", order = 6)]
     [Serializable]
