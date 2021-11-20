@@ -62,6 +62,8 @@ namespace Alteracia.Animations
         /// <returns></returns>
         public async Task Wait(bool changeCallback = false, Action finishCallback = null)
         {
+            await Task.Yield();
+            
             if (changeCallback && !this.Running) // TODO Check this
                 ChangeCallback(finishCallback);
             

@@ -12,12 +12,12 @@ namespace Alteracia.Animations
         /// Rotation at start
         /// </summary>
         [SerializeField]
-        private Quaternion start;
+        private Vector3 start;
         /// <summary>
         /// Rotation for finish
         /// </summary>
         [SerializeField]
-        private Quaternion finish;
+        private Vector3 finish;
         
         [NonSerialized]
         private Quaternion _start;
@@ -39,27 +39,28 @@ namespace Alteracia.Animations
 
         protected override void UpdateCurrentProgressFromStart()
         {
-            Progress = Quaternion.Angle(start, (Quaternion)_start) / Quaternion.Angle(start, finish);
+            var st = Quaternion.Euler(start);
+            Progress = Quaternion.Angle(st, _start) / Quaternion.Angle(st, Quaternion.Euler(finish));
         }
 
         protected override void SetConstantStart()
         {
-            _start = start;
+            _start = Quaternion.Euler(start);
         }
 
         protected override void OverwriteTarget()
         {
-            _finish = finish;
+            _finish = Quaternion.Euler(finish);
         }
 
         protected override void AddTarget()
         {
-            _finish = Quaternion.Euler(First.rotation.eulerAngles + finish.eulerAngles);
+            _finish = Quaternion.Euler(First.rotation.eulerAngles + finish);
         }
 
         protected override void MultiplyTarget()
         {
-            _finish = First.rotation * finish;
+            _finish = First.rotation * Quaternion.Euler(finish);
         }
 
         protected override void Interpolate()

@@ -72,7 +72,7 @@ namespace Alteracia.Animations
             _initialized = true;
         }
 
-        private static AltAnimationGroup Copy(AltAnimationGroup group)
+        public static AltAnimationGroup Copy(AltAnimationGroup group)
         {
             AltAnimationGroup newGroup = ScriptableObject.Instantiate(group);
             

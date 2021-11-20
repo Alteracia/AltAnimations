@@ -19,7 +19,7 @@ MonoBehaviour:
   swing: 1
   constant: 0
   delay: 0
-  duration: 1
+  duration: 2
   easing: 17
   curve:
     serializedVersion: 2
@@ -61,65 +61,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e09c88c4f0ab6496ebf9b439b92b4850, type: 3}
-  m_Name: CircleAround
+  m_Name: CircleMove
   m_EditorClassIdentifier: 
   nested:
-  - {fileID: 1729006380887845550}
   - {fileID: -9099888222609278932}
   - {fileID: 6639382564397510005}
   toAdd: {fileID: 0}
   id: around
---- !u!114 &1729006380887845550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c486e987c4f414c588b6eed23dd5b7e2, type: 3}
-  m_Name: Rotation
-  m_EditorClassIdentifier: 
-  rename: 
-  root: {fileID: 11400000}
-  playOver: 0
-  loop: 1
-  swing: 0
-  constant: 0
-  delay: 0
-  duration: 1
-  easing: 0
-  curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  multiComponents: 0
-  excludeSelf: 0
-  gameObjectName: 
-  operation: 1
-  start: {x: 0, y: 0, z: 0, w: 0}
-  finish: {x: 0, y: 360, z: 0, w: 0}
 --- !u!114 &6639382564397510005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,8 +86,8 @@ MonoBehaviour:
   loop: 1
   swing: 1
   constant: 0
-  delay: 0.5
-  duration: 1
+  delay: 1
+  duration: 2
   easing: 17
   curve:
     serializedVersion: 2
