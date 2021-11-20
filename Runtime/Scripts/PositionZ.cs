@@ -4,26 +4,19 @@ using UnityEngine;
 
 namespace Alteracia.Animations
 {
-    [CreateAssetMenu(fileName = "RotationAnimation", menuName = "AltAnimations/Rotation", order = 2)]
+    [CreateAssetMenu(fileName = "PositionZAnimation", menuName = "AltAnimations/PositionZ", order = 2)]
     [System.Serializable]
-    public class Rotation : AltAnimation
+    public class PositionZ : AltAnimation
     {
-        /// <summary>
-        /// Rotation at start
-        /// </summary>
-        [SerializeField]
-        private Quaternion start;
-        /// <summary>
-        /// Rotation for finish
-        /// </summary>
-        [SerializeField]
-        private Quaternion finish;
-        
+        [SerializeField] 
+        private float start;
+        [SerializeField] 
+        private float finish;
         [NonSerialized]
-        private Quaternion _start;
+        private float _start;
         [NonSerialized]
-        private Quaternion _finish;
-        
+        private float _finish;
+
         private Transform First => Components[0] as Transform;
         
         protected override bool PrepareTargets()
@@ -32,41 +25,42 @@ namespace Alteracia.Animations
             
             if (First == null) return false;
             
-            _start = First.rotation;
-
+            _start = First.position.z;
+          
             return true;
         }
-
+        
         protected override void UpdateCurrentProgressFromStart()
         {
-            Progress = Quaternion.Angle(start, (Quaternion)_start) / Quaternion.Angle(start, finish);
+            Progress = (_start - start) / (finish - start);
         }
 
         protected override void SetConstantStart()
         {
             _start = start;
         }
-
+        
         protected override void OverwriteTarget()
         {
             _finish = finish;
         }
-
+        
         protected override void AddTarget()
         {
-            _finish = Quaternion.Euler(First.rotation.eulerAngles + finish.eulerAngles);
+            _finish = First.position.z + finish;
         }
 
         protected override void MultiplyTarget()
         {
-            _finish = First.rotation * finish;
+            _finish = First.position.z * finish;
         }
 
         protected override void Interpolate()
         {
             foreach (var trans in Components.Cast<Transform>())
             {
-                trans.rotation = Quaternion.Lerp(_start, _finish, Progress);
+                Vector3 pos = trans.position;
+                trans.position = new Vector3(pos.x, pos.y, Mathf.Lerp(_start, _finish, Progress));
             }
         }
         

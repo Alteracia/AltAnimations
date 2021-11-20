@@ -1,6 +1,6 @@
 {
   "name": "com.alteracia.altanimations",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "displayName": "Alteracia.Animations",
   "description": "Alternative Animations for Unity. Based on ScriptableObjects and Async/await.",
   "unity": "2017.1",
@@ -13,11 +13,11 @@
   "author": {
     "name": "Pavel Kazantsev",
     "email": "kazantsev@alteracia.ru",
-    "url": ""
+    "url": "alteracia.ru"
   },
   "dependencies": {
-    "com.alteracia.altpatterns": "0.0.3",
-    "com.alteracia.altmath": "0.0.3"
+    "com.alteracia.altpatterns": "0.0.5",
+    "com.alteracia.altmath": "0.0.4"
   },
   "samples": [
     {

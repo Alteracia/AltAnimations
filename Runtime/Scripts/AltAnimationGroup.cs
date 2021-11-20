@@ -98,6 +98,15 @@ namespace Alteracia.Animations
         
         [ContextMenu("Add position animation")]
         private void AddPositionAnim() => AddNested<Position>();
+        
+        [ContextMenu("Add X position animation")]
+        private void AddPositionXAnim() => AddNested<PositionX>();
+        
+        [ContextMenu("Add Y position animation")]
+        private void AddPositionYAnim() => AddNested<PositionY>();
+        
+        [ContextMenu("Add Z position animation")]
+        private void AddPositionZAnim() => AddNested<PositionZ>();
 
         [ContextMenu("Add local position animation")]
         private void AddLocalPositionAnim() => AddNested<LocalPosition>();
