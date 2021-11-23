@@ -1,6 +1,6 @@
 {
   "name": "com.alteracia.altanimations",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "displayName": "Alteracia.Animations",
   "description": "Alternative Animations for Unity. Based on ScriptableObjects and Async/await.",
   "unity": "2017.1",

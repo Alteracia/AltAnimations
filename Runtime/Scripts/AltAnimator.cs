@@ -75,10 +75,12 @@ namespace Alteracia.Animations
         public static AltAnimationGroup Copy(AltAnimationGroup group)
         {
             AltAnimationGroup newGroup = ScriptableObject.Instantiate(group);
+            newGroup.Nested.Clear();
             
             foreach (var newAnim in from anim in @group.Nested 
                 where anim != null select ScriptableObject.Instantiate(anim))
             {
+                newAnim.Initialise(newGroup);
                 newGroup.Nested.Add(newAnim);
             }
 
@@ -96,16 +98,15 @@ namespace Alteracia.Animations
 
         public void Add(AltAnimationGroup group)
         {
-            if (instantiateAnimations)
-            {
-                group = Copy(group);
-            }
-            
+            // Copy group if animations was instantiated before and animator was setup for instantiate
+            if (instantiateAnimations && _initialized) group = Copy(group);
+
             List<AltAnimationGroup> list = (animationGroups == null) 
                 ? new List<AltAnimationGroup>() : animationGroups.ToList();
             list.Add(group);
             animationGroups = list.ToArray();
         }
+        
         /// <summary>
         /// Wait for end of all playing animations
         /// <example>
