@@ -25,12 +25,22 @@ namespace Alteracia.Animations
             
             this.Play(playOnStart);
         }
+
+        /// <summary>
+        /// Play Method for UnityEvent subscription in Inspector
+        /// </summary>
+        /// <param name="id">Id of animation group</param>
+        public void Play(string id)
+        {
+            this.Play(id, null);
+        }        
+        
         /// <summary>
         /// Start Playing animation group
         /// </summary>
         /// <param name="id">Id of animation group to play</param>
         /// <param name="finishCallback">Action witch will be called after animation finished or stopped</param>
-        public void Play(string id, Action finishCallback = null)
+        public void Play(string id, Action finishCallback)
         {
             if (animationGroups == null)
             {
@@ -72,7 +82,7 @@ namespace Alteracia.Animations
             _initialized = true;
         }
 
-        public static AltAnimationGroup Copy(AltAnimationGroup group)
+        internal static AltAnimationGroup Copy(AltAnimationGroup group)
         {
             AltAnimationGroup newGroup = ScriptableObject.Instantiate(group);
             newGroup.Nested.Clear();
@@ -87,6 +97,10 @@ namespace Alteracia.Animations
             return newGroup;
         }
         
+        /// <summary>
+        /// Add array of animations group
+        /// </summary>
+        /// <param name="groups">Array of animations group</param>
         public void Add(AltAnimationGroup[] groups)
         {
             foreach (AltAnimationGroup group in groups)
@@ -96,6 +110,10 @@ namespace Alteracia.Animations
             }
         }
 
+        /// <summary>
+        /// Add one animation group
+        /// </summary>
+        /// <param name="group">AnimationGroup asset</param>
         public void Add(AltAnimationGroup group)
         {
             // Copy group if animations was instantiated before and animator was setup for instantiate
@@ -122,6 +140,11 @@ namespace Alteracia.Animations
                 await  group.Wait();
         }
         
+        /// <summary>
+        /// Stop specific animation group
+        /// </summary>
+        /// <param name="id">Id of animation group</param>
+        /// <param name="invokeFinishCallback">Invoke callback or not</param>
         public void Stop(string id, bool invokeFinishCallback)
         {
             if (animationGroups == null) return;
@@ -132,6 +155,10 @@ namespace Alteracia.Animations
                 Debug.LogWarning("Can't find animation. Please check animation id", this.gameObject);
         }
         
+        /// <summary>
+        /// Stop all groups
+        /// </summary>
+        /// <param name="invokeFinishCallback">Invoke callbacks or not</param>
         public void Stop(bool invokeFinishCallback)
         {
             if (animationGroups == null) return;

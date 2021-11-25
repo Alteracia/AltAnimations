@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -56,7 +54,7 @@ namespace Alteracia.Animations
         public void Stop()
         {
             loop = false;
-            _current.Stop(false);
+            if (_current) _current.Stop(false);
             _playing = false;
             _current = null;
         }
