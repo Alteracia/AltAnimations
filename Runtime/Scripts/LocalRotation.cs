@@ -1,65 +1,72 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace Alteracia.Animations
 {
-    [CreateAssetMenu(fileName = "LocalPositionAnimation", menuName = "AltAnimations/LocalPosition", order = 2)]
+    [CreateAssetMenu(fileName = "LocalRotationAnimation", menuName = "AltAnimations/LocalRotation", order = 2)]
     [System.Serializable]
-    public class LocalPosition : AltAnimation
+    public class LocalRotation : AltAnimation
     {
-        [SerializeField] 
+        /// <summary>
+        /// Rotation at start
+        /// </summary>
+        [SerializeField]
         private Vector3 start;
-        [SerializeField] 
+        /// <summary>
+        /// Rotation for finish
+        /// </summary>
+        [SerializeField]
         private Vector3 finish;
-        [NonSerialized]
-        private Vector3 _start;
-        [NonSerialized]
-        private Vector3 _finish;
+        
+        [System.NonSerialized]
+        private Quaternion _start;
+        [System.NonSerialized]
+        private Quaternion _finish;
         
         private Transform First => Components[0] as Transform;
-
+        
         protected override bool PrepareTargets()
         {
             if (!base.PrepareTargets()) return false;
             
             if (First == null) return false;
             
-            _start = First.localPosition;
-          
+            _start = First.localRotation;
+
             return true;
         }
-        
+
         protected override void UpdateCurrentProgressFromStart()
         {
-            Progress = Vector3.Distance(start, _start) / Vector3.Distance(start, finish);
+            var st = Quaternion.Euler(start);
+            Progress = Quaternion.Angle(st, _start) / Quaternion.Angle(st, Quaternion.Euler(finish));
         }
 
         protected override void SetConstantStart()
         {
-            _start = start;
+            _start = Quaternion.Euler(start);
         }
-        
+
         protected override void OverwriteTarget()
         {
-            _finish = finish;
+            _finish = Quaternion.Euler(finish);
         }
-        
+
         protected override void AddTarget()
         {
-            _finish = First.localPosition + finish;
+            _finish = Quaternion.Euler(First.localRotation.eulerAngles + finish);
         }
 
         protected override void MultiplyTarget()
         {
-            _finish = Vector3.Cross(First.localPosition, finish);
+            _finish = First.localRotation * Quaternion.Euler(finish);
         }
 
         protected override void Interpolate()
         {
             foreach (var trans in Components.Cast<Transform>())
             {
-                trans.localPosition = Vector3.Lerp(_start, _finish, Progress);
+                trans.localRotation = Quaternion.Lerp(_start, _finish, Progress);
             }
         }
         

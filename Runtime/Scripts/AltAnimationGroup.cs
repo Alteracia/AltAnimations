@@ -119,8 +119,8 @@ namespace Alteracia.Animations
         [ContextMenu("Add rotation animation")]
         private void AddRotationAnim() => AddNested<Rotation>();
         
-       // [ContextMenu("Add local rotation animation")]
-       // private void AddLocalRotationAnim() => AddNested<LocalRotation>();
+        [ContextMenu("Add local rotation animation")]
+        private void AddLocalRotationAnim() => AddNested<LocalRotation>();
        
        // [ContextMenu("Add rect rotation animation")]
        // private void AddRectRotationAnim() => AddNested<RectRotation>();
