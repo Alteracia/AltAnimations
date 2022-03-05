@@ -161,7 +161,11 @@ namespace Alteracia.Animations
                 components = components.Where(c =>
                     c.gameObject.name == this.gameObjectName).ToArray();
             
-            if (components.Length == 0) return;
+            if (components.Length == 0)
+            {
+                Debug.LogWarning("Can't get "+ GetComponentType() + " of animation \"" + this.name + "\"", animator);
+                return;
+            }
             
             if (multiComponents) Components.AddRange(components);
             else Components.Add(components[0]);
@@ -269,7 +273,7 @@ namespace Alteracia.Animations
                
                 _timer += Time.deltaTime;
 
-                float alpha = _timer / _calculatedDuration;
+                float alpha = (_timer < 0f ? 0f : _timer) / _calculatedDuration; // Delay
                 if (loop || swing)
                     alpha = swing ? Mathf.PingPong(alpha, 1f) : Mathf.Repeat(alpha, 1f);
                 else
