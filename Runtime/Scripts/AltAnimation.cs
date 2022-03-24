@@ -153,7 +153,7 @@ namespace Alteracia.Animations
                 return;
             }
 
-            Component[] components = animator.GetComponentsInChildren(this.GetComponentType());
+            Component[] components = animator.GetComponentsInChildren(this.GetComponentType(), true);
             
             if (this.excludeSelf) 
                 components = components.Where(c => c.gameObject != animator).ToArray();
