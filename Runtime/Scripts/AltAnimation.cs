@@ -285,9 +285,13 @@ namespace Alteracia.Animations
                 
                 await Task.Yield();
             }
+
+            Finish();
             
             return false;
         }
+
+        protected virtual void Finish() { }
 
         protected abstract void Interpolate();
 
