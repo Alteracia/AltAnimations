@@ -12,6 +12,9 @@ namespace Alteracia.Animations
         [SerializeField] 
         private float finish;
         
+        [SerializeField] 
+        private bool alphaControlInteractivity;
+        
         [System.NonSerialized]
         private float _start;
         [System.NonSerialized]
@@ -26,6 +29,14 @@ namespace Alteracia.Animations
             if (First == null) return false;
             
             _start = First.alpha;
+            
+            if (alphaControlInteractivity && _start > 0.999f)
+            {
+                foreach (var canvasGroup in Components.Cast<CanvasGroup>())
+                {
+                    canvasGroup.interactable = false;
+                }
+            }
             
             return true;
         }
@@ -60,6 +71,15 @@ namespace Alteracia.Animations
             foreach (var canvasGroup in Components.Cast<CanvasGroup>())
             {
                 canvasGroup.alpha = Mathf.Lerp(_start, _finish, Progress);
+            }
+        }
+
+        protected override void Finish()
+        {
+            if (!alphaControlInteractivity || First.alpha < 0.999f) return;
+            foreach (var canvasGroup in Components.Cast<CanvasGroup>())
+            {
+                canvasGroup.interactable = true;
             }
         }
         
