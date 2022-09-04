@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Alteracia.Animations
 {
@@ -16,6 +18,9 @@ namespace Alteracia.Animations
 
         [SerializeField]
         private AltAnimationGroup[] animationGroups = null;
+
+        [SerializeField] 
+        private UnityEvent defaultCallback;
         
         private bool _initialized = false;
 
@@ -32,8 +37,8 @@ namespace Alteracia.Animations
         /// <param name="id">Id of animation group</param>
         public void Play(string id)
         {
-            this.Play(id, null);
-        }        
+            this.Play(id, defaultCallback.Invoke);
+        }
         
         /// <summary>
         /// Start Playing animation group
