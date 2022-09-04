@@ -20,7 +20,7 @@ namespace Alteracia.Animations
         private AltAnimationGroup[] animationGroups = null;
 
         [SerializeField] 
-        private UnityEvent defaultCallback;
+        private UnityEvent defaultCallback = new UnityEvent();
         
         private bool _initialized = false;
 
