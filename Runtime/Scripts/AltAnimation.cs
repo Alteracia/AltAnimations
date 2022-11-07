@@ -279,7 +279,7 @@ namespace Alteracia.Animations
                 else
                     alpha = Mathf.Clamp01(alpha);
                 
-                this.Progress = Logic.AltMath.Ease(easing, alpha);
+                this.Progress = Logic.AltMath.Ease(easing, alpha, curve);
                                 
                 this.Interpolate();
                 
