@@ -47,6 +47,7 @@ namespace Alteracia.Animations
         /// <param name="finishCallback">Action witch will be called after animation finished or stopped</param>
         public void Play(string id, Action finishCallback)
         {
+            if (!this) return;
             if (animationGroups == null)
             {
                 finishCallback?.Invoke();
@@ -58,7 +59,6 @@ namespace Alteracia.Animations
             if (animationGroups.Any(g => g.Id == id))
             {
                 var currentAnimG = animationGroups.First(g => g.Id == id);
-                
                 // Stop animationGroups with same changing properties as currentAnimG
                 foreach (var animG in animationGroups.Where(g => g.Id != id && g.Running))
                     if (currentAnimG.HaveEqualAnimationWith(animG))

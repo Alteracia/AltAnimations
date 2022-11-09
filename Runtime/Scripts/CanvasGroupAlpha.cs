@@ -76,6 +76,8 @@ namespace Alteracia.Animations
 
         protected override void Finish()
         {
+            if (!First) return;
+            
             if (!alphaControlInteractivity || First.alpha < 0.999f) return;
             foreach (var canvasGroup in Components.Cast<CanvasGroup>())
             {

@@ -270,7 +270,7 @@ namespace Alteracia.Animations
         {
             while (_timer < _calculatedDuration || loop || (swing && _timer < _calculatedDuration * 2f))
             {
-                if (_cancelTokenSource.Token.IsCancellationRequested)
+                if (_cancelTokenSource.Token.IsCancellationRequested || !Components[0])
                     return true;
                
                 _timer += Time.deltaTime;
@@ -282,7 +282,7 @@ namespace Alteracia.Animations
                     alpha = Mathf.Clamp01(alpha);
                 
                 this.Progress = Logic.AltMath.Ease(easing, alpha, curve);
-                                
+                
                 this.Interpolate();
                 
                 await Task.Yield();
