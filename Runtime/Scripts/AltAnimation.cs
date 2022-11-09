@@ -147,6 +147,8 @@ namespace Alteracia.Animations
 
         private void Init(GameObject animator)
         {
+            if (!animator) return;
+            
             if (this.GetComponentType() == null)
             {
                 Debug.LogError("Can't get Component Type of animation \"" + this.name + "\"", animator);
