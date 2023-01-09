@@ -122,14 +122,8 @@ namespace Alteracia.Animations
         [ContextMenu("Add local rotation animation")]
         private void AddLocalRotationAnim() => AddNested<LocalRotation>();
        
-       // [ContextMenu("Add rect rotation animation")]
-       // private void AddRectRotationAnim() => AddNested<RectRotation>();
-        
-       // [ContextMenu("Add scale animation")]
-       // private void AddScaleAnim() => AddNested<Scale>();
-       
-       // [ContextMenu("Add local scale animation")]
-       // private void AddLocalScaleAnim() => AddNested<LocalScale>();
+        [ContextMenu("Add local scale animation")]
+        private void AddLocalScaleAnim() => AddNested<LocalScale>();
        
         [ContextMenu("Add rect scale animation")]
         private void AddRectScaleAnim() => AddNested<RectScale>();
@@ -142,6 +136,12 @@ namespace Alteracia.Animations
         
         [ContextMenu("Add graphic shader float animation")]
         private void AddGraphicShaderFloatAnim() => AddNested<GraphicShaderFloatProperty>();
+        
+        [ContextMenu("Add renderer shader color animation")]
+        private void AddRendererColorFloatAnim() => AddNested<RendererShaderColorProperty>();
+        
+        [ContextMenu("Add graphic shader color animation")]
+        private void AddGraphicColorFloatAnim() => AddNested<GraphicShaderColorProperty>();
         
         [ContextMenu("Add renderer color animation")]
         private void AddRendererColorAnim() => AddNested<RendererColor>();

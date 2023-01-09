@@ -35,6 +35,7 @@ namespace Alteracia.Animations
                 foreach (var canvasGroup in Components.Cast<CanvasGroup>())
                 {
                     canvasGroup.interactable = false;
+                    canvasGroup.blocksRaycasts = false;
                 }
             }
             
@@ -82,6 +83,7 @@ namespace Alteracia.Animations
             foreach (var canvasGroup in Components.Cast<CanvasGroup>())
             {
                 canvasGroup.interactable = true;
+                canvasGroup.blocksRaycasts = true;
             }
         }
         
